@@ -1,6 +1,6 @@
 [package]
 name = "windivert-sys"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["ray851107 <ray851107@gmail.com>", "JohnDoneth <doneth7@gmail.com>"]
 
 [dependencies]
