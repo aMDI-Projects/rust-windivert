@@ -1,5 +1,4 @@
 extern crate winapi;
-extern crate kernel32;
 extern crate windivert_sys as ffi;
 
 use std::io::Result;
