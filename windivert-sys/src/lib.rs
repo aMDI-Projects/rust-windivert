@@ -4,7 +4,13 @@
     non_snake_case)]
 extern crate winapi;
 
-use winapi::*;
+use winapi::shared::ntdef::*;
+use winapi::shared::basetsd::*;
+use winapi::shared::minwindef::*;
+use winapi::um::minwinbase::*;
+use winapi::ctypes::*;
+
+use winapi::shared::ntdef::PVOID;
 
 /// *************************************************************************
 // WINDIVERT API
