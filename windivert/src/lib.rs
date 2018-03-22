@@ -6,12 +6,17 @@ use std::io::Result;
 use std::mem::uninitialized;
 use std::ffi::CString;
 
+use std::ptr;
+
+use winapi::shared::minwindef;
+use winapi::shared::ntdef;
+
 macro_rules! try_win {
-    ($expr:expr) => (if $expr == winapi::FALSE { return Err(std::io::Error::last_os_error()) })
+    ($expr:expr) => (if $expr == minwindef::FALSE { return Err(std::io::Error::last_os_error()) })
 }
 
 pub struct Handle {
-    handle: winapi::HANDLE,
+    handle: ntdef::HANDLE,
 }
 
 impl Handle {
@@ -23,7 +28,7 @@ impl Handle {
         let c_filter = CString::new(filter).unwrap().as_ptr();
         unsafe {
             let handle = ffi::WinDivertOpen(c_filter, layer, priority, flags);
-            if handle != winapi::INVALID_HANDLE_VALUE {
+            if handle != ptr::null_mut() {
                 Ok(Handle { handle: handle })
             } else {
                 Err(std::io::Error::last_os_error())
@@ -35,7 +40,7 @@ impl Handle {
             let mut read_len: u32 = uninitialized();
             let mut addr = uninitialized();
             try_win!(ffi::WinDivertRecv(self.handle,
-                                        packet.as_mut_ptr() as winapi::PVOID,
+                                        packet.as_mut_ptr() as ntdef::PVOID,
                                         packet.len() as u32,
                                         &mut addr,
                                         &mut read_len));
@@ -46,7 +51,7 @@ impl Handle {
         unsafe {
             let mut write_len: u32 = uninitialized();
             try_win!(ffi::WinDivertSend(self.handle,
-                                        packet.as_ptr() as winapi::PVOID,
+                                        packet.as_ptr() as ntdef::PVOID,
                                         packet.len() as u32,
                                         addr,
                                         &mut write_len));

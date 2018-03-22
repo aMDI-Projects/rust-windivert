@@ -4,4 +4,4 @@ version = "0.1.0"
 authors = ["ray851107 <ray851107@gmail.com>", "JohnDoneth <doneth7@gmail.com>"]
 
 [dependencies]
-winapi = "0.2.8"
+winapi = { version = "0.3.4", features = ["basetsd", "ntdef", "minwindef", "minwinbase", "ntdef"] }
