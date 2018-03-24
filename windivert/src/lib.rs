@@ -9,10 +9,14 @@ use std::ptr;
 
 use winapi::shared::minwindef;
 use winapi::shared::ntdef;
+use winapi::shared::basetsd::PLONG_PTR;
+use winapi::ctypes::c_void;
 
 macro_rules! try_win {
     ($expr:expr) => (if $expr == minwindef::FALSE { return Err(std::io::Error::last_os_error()) })
 }
+
+const INVALID_HANDLE_VALUE : *mut c_void = ((0 as i64) - 1) as *mut c_void;
 
 pub struct Handle {
     handle: ntdef::HANDLE,
@@ -24,13 +28,13 @@ impl Handle {
                priority: i16,
                flags: u64)
                -> Result<Handle> {
-        let c_filter = CString::new(filter).unwrap().as_ptr();
+        let c_filter = CString::new(filter).unwrap();
         unsafe {
-            let handle = ffi::WinDivertOpen(c_filter, layer, priority, flags);
-            if handle != ptr::null_mut() {
-                Ok(Handle { handle: handle })
-            } else {
+            let handle = ffi::WinDivertOpen(c_filter.as_ptr(), layer, priority, flags);
+            if handle == INVALID_HANDLE_VALUE {
                 Err(std::io::Error::last_os_error())
+            } else {
+                Ok(Handle { handle: handle })
             }
         }
     }
