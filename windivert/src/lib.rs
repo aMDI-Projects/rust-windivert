@@ -5,11 +5,8 @@ use std::io::Result;
 use std::mem::uninitialized;
 use std::ffi::CString;
 
-use std::ptr;
-
 use winapi::shared::minwindef;
 use winapi::shared::ntdef;
-use winapi::shared::basetsd::PLONG_PTR;
 use winapi::ctypes::c_void;
 
 macro_rules! try_win {
@@ -21,6 +18,9 @@ const INVALID_HANDLE_VALUE : *mut c_void = ((0 as i64) - 1) as *mut c_void;
 pub struct Handle {
     handle: ntdef::HANDLE,
 }
+
+unsafe impl Send for Handle {}
+unsafe impl Sync for Handle {}
 
 impl Handle {
     pub fn new(filter: &str,
