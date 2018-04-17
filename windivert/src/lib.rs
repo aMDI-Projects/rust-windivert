@@ -15,6 +15,7 @@ macro_rules! try_win {
 
 const INVALID_HANDLE_VALUE : *mut c_void = ((0 as i64) - 1) as *mut c_void;
 
+#[derive(Clone)]
 pub struct Handle {
     handle: ntdef::HANDLE,
 }
